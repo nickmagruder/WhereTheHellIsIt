@@ -1,0 +1,12 @@
+{
+  "name": "@wthi/tokens",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Shared design tokens — Violet theme CSS variables (single source of truth for web + mobile)",
+  "scripts": {
+    "lint": "eslint src --ext .ts",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "echo 'tokens: no build step — CSS is consumed directly'"
+  }
+}

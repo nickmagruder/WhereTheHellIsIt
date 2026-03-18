@@ -1,0 +1,69 @@
+name: Deploy — Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "deploy-prod" to confirm production deployment'
+        required: true
+        type: string
+
+# Only one prod deploy at a time — never cancel in progress
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: false
+
+jobs:
+  validate-confirm:
+    name: Validate confirmation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check confirmation input
+        if: github.event.inputs.confirm != 'deploy-prod'
+        run: |
+          echo "Confirmation mismatch. Got: '${{ github.event.inputs.confirm }}'"
+          echo "Expected: 'deploy-prod'"
+          exit 1
+
+  deploy-prod:
+    name: CDK Deploy → prod
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    needs: validate-confirm
+    # DISABLED until production stack is ready (Phase 11)
+    if: false
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN_PROD }}
+          aws-region: us-east-1
+
+      - name: CDK deploy (prod) — broadening changes require approval
+        working-directory: infra
+        run: npx cdk deploy --all --context env=prod --require-approval broadening
+        env:
+          CDK_DEFAULT_ACCOUNT: ${{ secrets.AWS_ACCOUNT_ID_PROD }}
+          CDK_DEFAULT_REGION: us-east-1

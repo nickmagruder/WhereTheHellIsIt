@@ -1,0 +1,22 @@
+{
+  "name": "@wthi/config",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Zod environment variable validation — shared by all Lambda packages and the web app",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint src --ext .ts",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0"
+  }
+}

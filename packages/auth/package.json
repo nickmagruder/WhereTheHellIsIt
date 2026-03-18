@@ -1,0 +1,19 @@
+{
+  "name": "@wthi/auth",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Cognito JWT utilities, role guards, and token helpers — shared by API resolvers",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint src --ext .ts",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "tsc --noEmit"
+  },
+  "dependencies": {
+    "aws-jwt-verify": "^4.0.1"
+  }
+}

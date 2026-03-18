@@ -1,0 +1,24 @@
+{
+  "name": "@wthi/mobile",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Expo SDK 52+ managed workflow React Native mobile application",
+  "main": "expo-router/entry",
+  "scripts": {
+    "lint": "eslint src --ext .ts,.tsx",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "dev": "expo start",
+    "build:ios": "eas build --platform ios",
+    "build:android": "eas build --platform android"
+  },
+  "dependencies": {
+    "expo": "^52.0.0",
+    "expo-router": "^4.0.0",
+    "react": "^18.3.1",
+    "react-native": "^0.76.7"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.18"
+  }
+}

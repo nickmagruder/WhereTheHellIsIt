@@ -1,0 +1,53 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+.next/
+.expo/
+cdk.out/
+*.d.ts
+*.js.map
+
+# Turbo cache
+.turbo/
+
+# Environment files — never commit secrets
+.env
+.env.local
+.env.*.local
+.env.development
+.env.staging
+.env.production
+
+# Test outputs
+coverage/
+.vitest/
+
+# Editor & OS
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+*.swo
+
+# AWS CDK
+cdk.context.json
+!cdk.json
+
+# TypeScript incremental build info
+*.tsbuildinfo
+
+# GraphQL codegen (committed, but exclude intermediary files)
+packages/graphql/src/generated/
+
+# Expo
+.expo/
+android/
+ios/
+
+# Logs
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*

@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "skills": {
+    "nextjs": {
+      "source": "vercel/vercel-plugin",
+      "sourceType": "github",
+      "computedHash": "d868806edb0ff72ea917d70f003e8ca7a984511c9fbce67073de0d04a489452e"
+    },
+    "shadcn": {
+      "source": "vercel/vercel-plugin",
+      "sourceType": "github",
+      "computedHash": "c7b2f8e5f49a48042edd4a00ff8e9d6fc37dea9437d0230da64542f0c9226fb0"
+    },
+    "turborepo": {
+      "source": "vercel/vercel-plugin",
+      "sourceType": "github",
+      "computedHash": "61b6ce82c8ea583f5afc35e5982843c28060594c230a085409944c19ae9e8708"
+    }
+  }
+}

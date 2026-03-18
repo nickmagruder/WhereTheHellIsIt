@@ -1,0 +1,31 @@
+{
+  "$schema": "https://turborepo.dev/schema.json",
+  "tasks": {
+    "build": {
+      "description": "Compile TypeScript and bundle the application",
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "dist/**"]
+    },
+    "lint": {
+      "description": "Lint source files with ESLint"
+    },
+    "type-check": {
+      "description": "Type-check with TypeScript (no emit)",
+      "dependsOn": ["^type-check"],
+      "outputs": []
+    },
+    "test": {
+      "description": "Run the test suite with Vitest",
+      "outputs": ["coverage/**"]
+    },
+    "dev": {
+      "description": "Start development server",
+      "cache": false,
+      "persistent": true
+    },
+    "clean": {
+      "description": "Remove build artifacts",
+      "cache": false
+    }
+  }
+}

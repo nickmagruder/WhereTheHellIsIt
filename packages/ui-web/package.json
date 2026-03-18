@@ -1,0 +1,20 @@
+{
+  "name": "@wthi/ui-web",
+  "version": "0.0.1",
+  "private": true,
+  "description": "shadcn/ui components styled to the Violet design tokens — web app component library",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint src --ext .ts,.tsx",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": ">=19",
+    "react-dom": ">=19"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "@wthi/test-utils",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Shared test utilities — MSW handlers, fishery factories, DB transaction helpers",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint src --ext .ts",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "tsc --noEmit"
+  },
+  "dependencies": {
+    "fishery": "^2.2.2",
+    "msw": "^2.7.0"
+  }
+}

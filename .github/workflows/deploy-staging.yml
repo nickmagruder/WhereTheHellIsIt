@@ -1,0 +1,61 @@
+name: Deploy — Staging
+
+on:
+  push:
+    branches: [main]
+
+# Only one staging deploy at a time
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: false
+
+jobs:
+  deploy-staging:
+    name: CDK Deploy → dev
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    # DISABLED until CDK stacks have real resources (Phase 3+)
+    if: false
+
+    permissions:
+      id-token: write # Required for OIDC auth to AWS
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN_DEV }}
+          aws-region: us-east-1
+
+      - name: CDK deploy (dev)
+        working-directory: infra
+        run: npx cdk deploy --all --context env=dev --require-approval never
+        env:
+          CDK_DEFAULT_ACCOUNT: ${{ secrets.AWS_ACCOUNT_ID_DEV }}
+          CDK_DEFAULT_REGION: us-east-1
+
+      - name: Run integration tests
+        run: pnpm turbo test --filter='@wthi/api'
+        # TODO Phase 4: integration tests against deployed dev environment
+
+      - name: OWASP ZAP baseline scan
+        run: echo "TODO Phase 5: wire ZAP scan against deployed staging URL"
+        # TODO Phase 5: zaproxy/action-baseline-scan@v0.10.0

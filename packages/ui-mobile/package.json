@@ -1,0 +1,20 @@
+{
+  "name": "@wthi/ui-mobile",
+  "version": "0.0.1",
+  "private": true,
+  "description": "React Native Reusables components with NativeWind — mobile component library",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint src --ext .ts,.tsx",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-native": ">=0.76"
+  }
+}
