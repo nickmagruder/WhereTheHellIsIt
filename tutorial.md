@@ -318,3 +318,64 @@ cd infra && npx cdk synth
 **Phase 0 is done when:** All of the above pass with no errors.
 
 > **Next up:** Phase 1 — Drizzle schema, migrations, and integration test scaffold against local PostgreSQL (Docker Compose).
+
+---
+
+## Phase 1: Data Layer — DB Schema + Drizzle
+
+**Goal:** Full Drizzle schema with migrations runnable against local PostgreSQL. By the end of this phase, `pnpm db:migrate` applies all migrations to a fresh Docker PostgreSQL instance, and the integration test scaffold can connect and run a transaction-wrapped test.
+
+### Step 1.1: Docker Compose for Local Dev
+
+Before we can run migrations or integration tests, we need a local PostgreSQL instance. Docker Compose gives us a reproducible, one-command database.
+
+**File:** `docker-compose.yml` (repo root)
+
+```yaml
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: wherethehellistit
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: dev
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    command: ["postgres", "-c", "shared_preload_libraries=pg_trgm"]
+
+volumes:
+  pgdata:
+```
+
+**Why PostgreSQL 16 Alpine?** The `-alpine` image is smaller (roughly 85 MB vs 400+ MB for the full image), which speeds up CI pull times. We pin to major version 16 to match Aurora Serverless v2.
+
+**Why `shared_preload_libraries=pg_trgm`?** The `pg_trgm` extension (used for trigram-based similarity search) needs to be referenced during startup. Although `pg_trgm` is bundled with PostgreSQL 16 and enabled with `CREATE EXTENSION`, loading it at startup ensures it's available before our migration runs without requiring a server restart mid-session. The `ltree` extension (for location hierarchy) doesn't require preloading — it's enabled the same way, just via `CREATE EXTENSION IF NOT EXISTS ltree` in the migration.
+
+**Named volume `pgdata`:** Data persists between `docker compose stop` / `docker compose up` cycles. To wipe it and start fresh: `docker compose down -v`.
+
+**Start the database:**
+
+```bash
+docker compose up -d
+```
+
+**Verify it's running:**
+
+```bash
+docker compose ps
+# postgres   running   0.0.0.0:5432->5432/tcp
+```
+
+**Connect (optional check):**
+
+```bash
+docker compose exec postgres psql -U dev -d wherethehellistit
+```
+
+**The `DATABASE_URL` in `.env.example` already matches these credentials:**
+
+```env
+DATABASE_URL=postgresql://dev:dev@localhost:5432/wherethehellistit
+```
+
+Copy `.env.example` to `.env` before running migrations in the next steps.
