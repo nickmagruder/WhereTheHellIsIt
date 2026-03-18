@@ -12,6 +12,10 @@ See `tutorial.md` for a step-by-step build log and `CLAUDE.md` for the full arch
 
 > Newest entries at top.
 
+### 2026-03-17 (5)
+
+Fix CI: remove redundant `version: 9` from all three workflow pnpm setup steps — `pnpm/action-setup@v4` reads the version from `packageManager` in `package.json` automatically; specifying both causes `ERR_PNPM_BAD_PM_VERSION`
+
 ### 2026-03-17 (4)
 
 Phase 1.1: Docker Compose for Local Dev

@@ -317,6 +317,32 @@ cd infra && npx cdk synth
 
 **Phase 0 is done when:** All of the above pass with no errors.
 
+### Gotcha: pnpm version conflict in CI
+
+When CI first ran, the pnpm setup step failed with:
+
+```text
+Error: Multiple versions of pnpm specified:
+  - version 9 in the GitHub Action config with the key "version"
+  - version pnpm@9.15.4 in the package.json with the key "packageManager"
+```
+
+**The cause:** `pnpm/action-setup@v4` reads the exact version from `packageManager` in `package.json` automatically. When you also specify `version: 9` in the workflow `with:` block, the action sees two conflicting declarations and refuses to proceed.
+
+**The fix:** Remove `version: 9` from all three workflow files. The action then uses `pnpm@9.15.4` from `package.json` — exact version, single source of truth:
+
+```yaml
+# Before (broken)
+- name: Setup pnpm
+  uses: pnpm/action-setup@v4
+  with:
+    version: 9
+
+# After (correct)
+- name: Setup pnpm
+  uses: pnpm/action-setup@v4
+```
+
 > **Next up:** Phase 1 — Drizzle schema, migrations, and integration test scaffold against local PostgreSQL (Docker Compose).
 
 ---
