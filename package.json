@@ -28,5 +28,11 @@
   "engines": {
     "node": ">=22",
     "pnpm": ">=9"
+  },
+  "pnpm": {
+    "overrides": {
+      "tar": ">=7.5.11",
+      "fast-xml-parser": ">=5.5.6"
+    }
   }
 }

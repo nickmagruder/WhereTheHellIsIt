@@ -317,6 +317,28 @@ cd infra && npx cdk synth
 
 **Phase 0 is done when:** All of the above pass with no errors.
 
+### Gotcha: transitive dependency audit failures
+
+CI failed `pnpm audit --audit-level=high` with 7 high-severity CVEs — all in transitive deps we don't control directly:
+
+- **`tar@6.2.1`** — multiple path-traversal CVEs; patched in `>=7.5.11`. Pulled in by `expo@52 > @expo/cli`.
+- **`fast-xml-parser@5.4.1`** — numeric entity expansion CVE; patched in `>=5.5.6`. Pulled in by `@aws-sdk/core`.
+
+Neither can be fixed by upgrading our direct dependencies — the owning packages (`@expo/cli`, `@aws-sdk/core`) haven't yet released versions with updated transitive deps. The fix is `pnpm.overrides` in root `package.json`, which forces all instances of those packages in the tree to a safe version:
+
+```json
+"pnpm": {
+  "overrides": {
+    "tar": ">=7.5.11",
+    "fast-xml-parser": ">=5.5.6"
+  }
+}
+```
+
+After adding this, run `pnpm install` to regenerate the lockfile. The overrides get written into `pnpm-lock.yaml` and CI then picks them up via `--frozen-lockfile`.
+
+The `tar` jump from v6 → v7 is a major version, but `@expo/cli` uses tar only for package extraction (trusted npm registry sources), so the API surface it relies on is stable across versions. Confirm by running `pnpm turbo test` after install — if @expo/cli breaks, the error will surface there.
+
 ### Gotcha: pnpm version conflict in CI
 
 When CI first ran, the pnpm setup step failed with:

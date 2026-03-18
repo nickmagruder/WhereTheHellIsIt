@@ -15,7 +15,8 @@
       "Bash(pnpm turbo:*)",
       "Bash(npx tsc:*)",
       "Bash(pnpm run:*)",
-      "Bash(npx cdk:*)"
+      "Bash(npx cdk:*)",
+      "Bash(pnpm audit:*)"
     ]
   }
 }
