@@ -11,7 +11,11 @@
     "dev": "turbo dev",
     "clean": "turbo clean",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "db:generate": "pnpm --filter=@wthi/db db:generate",
+    "db:migrate": "pnpm --filter=@wthi/db db:migrate",
+    "db:studio": "pnpm --filter=@wthi/db db:studio",
+    "db:seed": "tsx scripts/seed.ts"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.18.0",

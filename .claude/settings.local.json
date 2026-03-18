@@ -16,7 +16,8 @@
       "Bash(npx tsc:*)",
       "Bash(pnpm run:*)",
       "Bash(npx cdk:*)",
-      "Bash(pnpm audit:*)"
+      "Bash(pnpm audit:*)",
+      "Bash(pnpm --filter=@wthi/db type-check)"
     ]
   }
 }
