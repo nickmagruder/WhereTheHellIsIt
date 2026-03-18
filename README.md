@@ -12,6 +12,20 @@ See `tutorial.md` for a step-by-step build log and `CLAUDE.md` for the full arch
 
 > Newest entries at top.
 
+### 2026-03-17 (7)
+
+Phase 1.2: Drizzle Schema
+
+- Created `packages/db/src/schema/` with all 6 table definitions in FK dependency order: `users`, `spaces`, `space_members`, `locations`, `items`, `photos`
+- `roleEnum` (`pgEnum`) and `uploadStatusEnum` enforced at DB level
+- `ltree` column in `locations` via `customType` + GIST index; self-referential `parent_id` FK deferred to migration SQL (TypeScript circular inference workaround)
+- `search_vector` in `items` via `customType` + `generatedAlwaysAs` (GENERATED ALWAYS AS STORED); GIN indexes on `search_vector` and `tags` array
+- `photos.primary_photo_id` circular FK with `items` deferred to migration SQL
+- Created `packages/db/drizzle.config.ts`; updated `packages/db/src/index.ts`
+- Added `db:generate`, `db:migrate`, `db:studio`, `db:seed` scripts to root `package.json`
+- Drizzle ORM v0.36 API notes: index third arg is array (not object); `generatedAlwaysAs` takes 1 arg; GIN/GIST via `.using(method, column)`
+- All 24 turbo tasks (`lint` + `type-check`) pass
+
 ### 2026-03-17 (6)
 
 Fix audit: add `pnpm.overrides` for `tar` (forced `>=7.5.11`) and `fast-xml-parser` (forced `>=5.5.6`) to resolve 7 high-severity transitive CVEs from `@expo/cli` and `@aws-sdk/*`; audit now passes with 0 high/critical findings

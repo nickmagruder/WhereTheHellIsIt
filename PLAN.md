@@ -172,7 +172,7 @@ volumes:
 
 Note: `ltree` and `pg_trgm` are bundled with PostgreSQL — no extra install needed, but must be enabled with `CREATE EXTENSION`.
 
-### ⬜ 1.2 Drizzle Schema
+### ✅ 1.2 Drizzle Schema
 
 **Files in `packages/db/src/schema/`:**
 
