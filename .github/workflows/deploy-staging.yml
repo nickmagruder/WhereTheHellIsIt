@@ -27,8 +27,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -57,5 +55,6 @@ jobs:
         # TODO Phase 4: integration tests against deployed dev environment
 
       - name: OWASP ZAP baseline scan
-        run: echo "TODO Phase 5: wire ZAP scan against deployed staging URL"
         # TODO Phase 5: zaproxy/action-baseline-scan@v0.10.0
+        run: |
+          echo "TODO Phase 5: wire ZAP scan against deployed staging URL"

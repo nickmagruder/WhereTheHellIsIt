@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: wherethehellistit
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: dev
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    # pg_trgm loaded at startup so CREATE EXTENSION works without superuser restart
+    # ltree and pg_trgm are bundled with PostgreSQL 16 — enable via CREATE EXTENSION in migrations
+    command: ["postgres", "-c", "shared_preload_libraries=pg_trgm"]
+
+volumes:
+  pgdata:

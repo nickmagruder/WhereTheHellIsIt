@@ -317,4 +317,113 @@ cd infra && npx cdk synth
 
 **Phase 0 is done when:** All of the above pass with no errors.
 
+### Gotcha: transitive dependency audit failures
+
+CI failed `pnpm audit --audit-level=high` with 7 high-severity CVEs — all in transitive deps we don't control directly:
+
+- **`tar@6.2.1`** — multiple path-traversal CVEs; patched in `>=7.5.11`. Pulled in by `expo@52 > @expo/cli`.
+- **`fast-xml-parser@5.4.1`** — numeric entity expansion CVE; patched in `>=5.5.6`. Pulled in by `@aws-sdk/core`.
+
+Neither can be fixed by upgrading our direct dependencies — the owning packages (`@expo/cli`, `@aws-sdk/core`) haven't yet released versions with updated transitive deps. The fix is `pnpm.overrides` in root `package.json`, which forces all instances of those packages in the tree to a safe version:
+
+```json
+"pnpm": {
+  "overrides": {
+    "tar": ">=7.5.11",
+    "fast-xml-parser": ">=5.5.6"
+  }
+}
+```
+
+After adding this, run `pnpm install` to regenerate the lockfile. The overrides get written into `pnpm-lock.yaml` and CI then picks them up via `--frozen-lockfile`.
+
+The `tar` jump from v6 → v7 is a major version, but `@expo/cli` uses tar only for package extraction (trusted npm registry sources), so the API surface it relies on is stable across versions. Confirm by running `pnpm turbo test` after install — if @expo/cli breaks, the error will surface there.
+
+### Gotcha: pnpm version conflict in CI
+
+When CI first ran, the pnpm setup step failed with:
+
+```text
+Error: Multiple versions of pnpm specified:
+  - version 9 in the GitHub Action config with the key "version"
+  - version pnpm@9.15.4 in the package.json with the key "packageManager"
+```
+
+**The cause:** `pnpm/action-setup@v4` reads the exact version from `packageManager` in `package.json` automatically. When you also specify `version: 9` in the workflow `with:` block, the action sees two conflicting declarations and refuses to proceed.
+
+**The fix:** Remove `version: 9` from all three workflow files. The action then uses `pnpm@9.15.4` from `package.json` — exact version, single source of truth:
+
+```yaml
+# Before (broken)
+- name: Setup pnpm
+  uses: pnpm/action-setup@v4
+  with:
+    version: 9
+
+# After (correct)
+- name: Setup pnpm
+  uses: pnpm/action-setup@v4
+```
+
 > **Next up:** Phase 1 — Drizzle schema, migrations, and integration test scaffold against local PostgreSQL (Docker Compose).
+
+---
+
+## Phase 1: Data Layer — DB Schema + Drizzle
+
+**Goal:** Full Drizzle schema with migrations runnable against local PostgreSQL. By the end of this phase, `pnpm db:migrate` applies all migrations to a fresh Docker PostgreSQL instance, and the integration test scaffold can connect and run a transaction-wrapped test.
+
+### Step 1.1: Docker Compose for Local Dev
+
+Before we can run migrations or integration tests, we need a local PostgreSQL instance. Docker Compose gives us a reproducible, one-command database.
+
+**File:** `docker-compose.yml` (repo root)
+
+```yaml
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: wherethehellistit
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: dev
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    command: ["postgres", "-c", "shared_preload_libraries=pg_trgm"]
+
+volumes:
+  pgdata:
+```
+
+**Why PostgreSQL 16 Alpine?** The `-alpine` image is smaller (roughly 85 MB vs 400+ MB for the full image), which speeds up CI pull times. We pin to major version 16 to match Aurora Serverless v2.
+
+**Why `shared_preload_libraries=pg_trgm`?** The `pg_trgm` extension (used for trigram-based similarity search) needs to be referenced during startup. Although `pg_trgm` is bundled with PostgreSQL 16 and enabled with `CREATE EXTENSION`, loading it at startup ensures it's available before our migration runs without requiring a server restart mid-session. The `ltree` extension (for location hierarchy) doesn't require preloading — it's enabled the same way, just via `CREATE EXTENSION IF NOT EXISTS ltree` in the migration.
+
+**Named volume `pgdata`:** Data persists between `docker compose stop` / `docker compose up` cycles. To wipe it and start fresh: `docker compose down -v`.
+
+**Start the database:**
+
+```bash
+docker compose up -d
+```
+
+**Verify it's running:**
+
+```bash
+docker compose ps
+# postgres   running   0.0.0.0:5432->5432/tcp
+```
+
+**Connect (optional check):**
+
+```bash
+docker compose exec postgres psql -U dev -d wherethehellistit
+```
+
+**The `DATABASE_URL` in `.env.example` already matches these credentials:**
+
+```env
+DATABASE_URL=postgresql://dev:dev@localhost:5432/wherethehellistit
+```
+
+Copy `.env.example` to `.env` before running migrations in the next steps.

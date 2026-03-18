@@ -14,6 +14,7 @@
 2. Check for problems in the work just done
 3. Update CLAUDE.md, README.md, ARCHITECTURE.md, and tutorial.md as needed
 4. Update memory files if anything relevant changed
+5. Update PLAN.md — mark any completed sub-steps with ✅ and any newly started/incomplete ones with ⬜
 
 ---
 
