@@ -4,6 +4,13 @@
 
 ---
 
+## Shared standards (clankers)
+
+Universal standards, skills and agents come from the **clankers** repo
+(<https://github.com/nickmagruder/clankers>, local: `~/.claude/clankers`) and
+load globally. This file holds only what is specific to this project and wins
+on conflict. All projects: `~/.claude/clankers/registry/PROJECTS.md`.
+
 ## Working Rules
 
 - **Git is handled by the user.** Do not run any git commands (commit, push, branch, etc.).
