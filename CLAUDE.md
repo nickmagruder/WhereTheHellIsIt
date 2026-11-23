@@ -1,27 +1,10 @@
+@AGENTS.md
+@memory/MEMORY.md
+@memory/local/MEMORY.md
+
 # Where the Hell Is It? — Architecture Reference
 
 > This is the living architecture document for this project. Update it as decisions evolve.
-
----
-
-## Shared standards (clankers)
-
-Universal standards, skills and agents come from the **clankers** repo
-(<https://github.com/nickmagruder/clankers>, local: `~/.claude/clankers`) and
-load globally. This file holds only what is specific to this project and wins
-on conflict. All projects: `~/.claude/clankers/registry/PROJECTS.md`.
-
-## Working Rules
-
-- **Git is handled by the user.** Do not run any git commands (commit, push, branch, etc.).
-
-**At the end of every task, Claude MUST:**
-
-1. Add an entry to the README changelog (newest at top — this also serves as the git commit message)
-2. Check for problems in the work just done
-3. Update CLAUDE.md, README.md, ARCHITECTURE.md, and tutorial.md as needed
-4. Update memory files if anything relevant changed
-5. Update PLAN.md — mark any completed sub-steps with ✅ and any newly started/incomplete ones with ⬜
 
 ---
 
