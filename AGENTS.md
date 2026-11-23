@@ -16,17 +16,22 @@ rules; this project's only exceptions are the ones listed for it under
 
 ## Stack
 
-- **Apps:** React Native + Expo (mobile); a pnpm + Turborepo monorepo (`apps/`, `packages/`)
+- **Apps:** web (`apps/web`, Next.js) and mobile (`apps/mobile`, React Native + Expo), in a pnpm + Turborepo monorepo with shared `packages/`
 - **Backend/API:** AWS AppSync (GraphQL) with Lambda resolvers; Cognito auth
 - **Data:** Aurora Serverless v2 (PostgreSQL) via RDS Proxy, Drizzle ORM
 - **Hosting/CI:** AWS CDK (`infra/`), GitHub Actions
 
-The full architecture reference and ADRs are in `CLAUDE.md` below its imports.
+The full architecture reference and ADRs are in `CLAUDE.md` below its imports; read it before architecture work.
 
 ## Working rules
 
 - **Git, PRs and AI review:** clankers `standards/git.md`. This repo's
-  facts: PRs squash-merge, and Nick merges.
+  facts: PRs squash-merge (enforced once #5 lands), and Nick merges. CI
+  (`ci.yml`) runs on every PR; it fails on `main` today at `pnpm audit`
+  (#11).
+- **This repo is public:** keep secrets, personal details and local
+  settings out of every tracked file, `AGENTS.md`, `CLAUDE.md` and
+  `memory/` included.
 - **Deploys:** both deploy jobs are disabled (`if: false`):
   `deploy-staging.yml` would run on every push to `main` once enabled
   (Phase 3+), and `deploy-prod.yml` is a manual `workflow_dispatch` (Phase
@@ -46,7 +51,7 @@ The full architecture reference and ADRs are in `CLAUDE.md` below its imports.
   `global/AGENTS.md` "Memory"); `memory/local/` is gitignored, for facts
   that mustn't be committed. Read both indexes at the start of a session
   (`CLAUDE.md` imports them), and write new memories there, never in a
-  tool's own store. This repo is public.
+  tool's own store.
 
 ## Key files
 
@@ -54,4 +59,7 @@ The full architecture reference and ADRs are in `CLAUDE.md` below its imports.
 - `CLAUDE.md`: architecture reference and ADRs
 - `PLAN.md`: phased build plan with ✅/⬜ marks
 - `tutorial.md`: step-by-step build log
-- `.github/workflows/`: `ci.yml`, `deploy-staging.yml`, `deploy-prod.yml` (both deploys disabled)
+- `memory/MEMORY.md`: agent memory index
+- `infra/`: AWS CDK stacks
+- `.agents/skills/`: shared agent skills
+- `.github/workflows/`: `ci.yml` (lint, type-check, test, CDK synth, audit), `deploy-staging.yml`, `deploy-prod.yml` (both deploys disabled)
