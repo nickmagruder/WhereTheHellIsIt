@@ -6,22 +6,28 @@
 
 ## Shared standards (clankers)
 
-Universal standards, skills and agents come from the **clankers** repo
-(<https://github.com/nickmagruder/clankers>, local: `~/.claude/clankers`) and
-load globally. This file holds only what is specific to this project and wins
-on conflict. All projects: `~/.claude/clankers/registry/PROJECTS.md`.
+Check clankers first. Universal standards, skills and agents come from the
+**clankers** repo (<https://github.com/nickmagruder/clankers>, local:
+`~/.claude/clankers`) and load globally: git, PRs, AI review, issues and docs
+follow `~/.claude/clankers/standards/` here as in every repo. This file holds
+only facts specific to this project and doesn't restate or override those
+rules; this project's only exceptions are the ones listed for it under
+"Exceptions to clankers standards" in `~/.claude/clankers/registry/PROJECTS.md`
+(none today).
 
 ## Working Rules
 
-- **Git is handled by the user.** Do not run any git commands (commit, push, branch, etc.).
-
-**At the end of every task, Claude MUST:**
-
-1. Add an entry to the README changelog (newest at top — this also serves as the git commit message)
-2. Check for problems in the work just done
-3. Update CLAUDE.md, README.md, ARCHITECTURE.md, and tutorial.md as needed
-4. Update memory files if anything relevant changed
-5. Update PLAN.md — mark any completed sub-steps with ✅ and any newly started/incomplete ones with ⬜
+- **Git, PRs, AI review and issues:** clankers `standards/git.md` and
+  `standards/github.md`: agents branch, commit, push and open the PR as the
+  natural next step, request its AI review, and Nick merges. This repo's
+  issues go on the [Where the Hell Is it? board](https://github.com/users/nickmagruder/projects/4).
+- **End of every task:** clankers `global/AGENTS.md` "End of every task".
+  This repo's specifics: the README changelog is newest at top; update
+  `CLAUDE.md` (the architecture reference), `README.md` and `tutorial.md`
+  where affected; in `PLAN.md`, mark completed sub-steps ✅ and newly
+  started or incomplete ones ⬜.
+- **Memory:** clankers `global/AGENTS.md` "Memory": `memory/MEMORY.md` here
+  (`memory/local/` is gitignored), never a tool's own store.
 
 ---
 

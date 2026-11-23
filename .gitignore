@@ -51,3 +51,6 @@ ios/
 npm-debug.log*
 pnpm-debug.log*
 yarn-debug.log*
+
+# Agent memory that must not be committed (clankers "Memory")
+memory/local/

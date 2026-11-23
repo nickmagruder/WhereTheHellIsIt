@@ -12,6 +12,14 @@ See `tutorial.md` for a step-by-step build log and `CLAUDE.md` for the full arch
 
 > Newest entries at top.
 
+### 2026-11-23
+
+Follow clankers standards (#6)
+
+- Agents now follow the standard git flow from clankers: they branch, commit, push and open the PR, request its AI review, and Nick merges. "Git is handled by the user" is gone
+- `CLAUDE.md` checks clankers first and keeps only this repo's facts (changelog order, PLAN.md marks, the board); the end-of-task steps point to clankers
+- Agent memory lives in a tracked `memory/` folder (`memory/local/` gitignored), never a tool's own store
+
 ### 2026-03-17 (7)
 
 Phase 1.2: Drizzle Schema
