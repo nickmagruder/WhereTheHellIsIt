@@ -27,8 +27,7 @@ The full architecture reference and ADRs are in `CLAUDE.md` below its imports; r
 
 - **Git, PRs and AI review:** clankers `standards/git.md`. This repo's
   facts: PRs squash-merge (enforced once #5 lands), and Nick merges. CI
-  (`ci.yml`) runs on every PR; it fails on `main` today at `pnpm audit`
-  (#11).
+  (`ci.yml`) runs on every PR; for its `pnpm audit` failure see #11.
 - **This repo is public:** keep secrets, personal details and local
   settings out of every tracked file, `AGENTS.md`, `CLAUDE.md` and
   `memory/` included.
